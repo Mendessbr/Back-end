@@ -33,14 +33,27 @@ UserLabel.place(x=5, y=100)
 UserEntry = ttk.Entry(RightFrame, width=30)
 UserEntry.place(x=200, y=110)
 
-PassLabel = Label(RightFrame, text="Password", font=("Century Gothic", 20), bg="MIDNIGHTBLUE", fg="white")
-PassLabel.place(x=5, y=150)
+PasswordLabel = Label(RightFrame, text="Password", font=("Century Gothic", 20), bg="MIDNIGHTBLUE", fg="white")
+PasswordLabel.place(x=5, y=150)
 
 PassEntry = ttk.Entry(RightFrame, width=30, show="*")
 PassEntry.place(x=150, y=160)
 
+def LoginAsses():
+    DataBaser.cursor.execute("""
+    SELECT * FROM Users
+     WHERE (User = ? AND Password = ?)
+""", (User, Pass))
+    print("Selecionou")
+    VerifyLogin = DataBaser.cursor.execute.fetchone()
+    try:
+        if (user in VerifyLogin and Pass in VerifyLogin):
+            messagebox.showinfo(title="Login Info", message= "Acesso confirmaod. Bem-vindo")
+    except:
+             messagebox.showinfo(title="Login Info", message="Acesso negado. Verifique se esta cadastrado no sistema")
+
 #Botoes
-LoginInButton = ttk.Button(RightFrame, text= "Register", width=30 )
+LoginInButton = ttk.Button(RightFrame, text= "Register", width=30, command=Login )
 LoginInButton.place(x=100, y=225)
 
 def Register():
@@ -60,16 +73,20 @@ def Register():
     EmailEntry = ttk.Entry(RightFrame, width=39)
     EmailEntry.place(x=100, y=66)
 
-    def RegisterToBase():
+    def RegisterToDataBase():
         Name = NomeEntry.get()
         Email = EmailEntry.get()
         User = UserEntry.get()
-        Pass =PassEntry.get9() 
-        DataBaser.cursor .execute("""
-        INSERT INTO Users(Name, Email, User, Password) VALUES(?, ?, ?, ?)
-        """,(Name, Email, User, Pass))
-        DataBaser.conn.commit()
-        messagebox.showinfo(title="Register Info", message="Conta criada com sucesso")
+        Pass =PassEntry.get() 
+
+        if (name == "" and Email == "" and User == "" and Pass == ""):
+            messagebox.showerror(title="Register Error", message= "Não deixe nenhum campo vazio. Preencha todos os campos")
+        else:
+            DataBaser.cursor .execute("""
+            INSERT INTO Users(Name, Email, User, Password) VALUES(?, ?, ?, ?)
+            """,(Name, Email, User, Pass))
+            DataBaser.conn.commit()
+            messagebox.showinfo(title="Register Info", message="Conta criada com sucesso")
 
     RegisterButton = ttk.Button(RightFrame, text= "Register", width=30, command=Register)
     RegisterButton.place(x=100, y=225)
